@@ -6,14 +6,61 @@
                     <title>
                         QuiSwitch
                     </title>
-                    <link href="styles/main.css" rel="stylesheet">
+                    <link href="styles/camera.css" rel="stylesheet">
                     </link>
                 </base>
             </meta>
         </meta>
     </head>
     <body>
-        <input id="link" value="http://www.google.com"></input>
+        <div id=container>
+            <p id="titleoptions">
+                OPTIONS
+            </p>
+            <p>
+
+                <text class="titles">Toggle Capture:</text>
+                <label class="switch">
+                  <input type="checkbox" checked="true" id="toggle" value="true"></input>
+                  <span class="slider round"></span>
+                </label>
+            </p>
+            <p>
+                <span class="input">
+                    Safe Link URL: 
+                    <input type= "url" id="link" value="http://www.google.com"></input>
+                    <span></span>   
+                </span>
+            </p>
+            <p>
+                <span class="input">
+                    Delay to close: 
+                    <input type="number" id="time" value="10"></input>
+                    <span></span>   
+                </span>
+            </p>
+            <p>
+                <span class="input">
+                    Number to abide: 
+                    <input type="number" id="users" value="1"></input>
+                    <span></span>   
+                </span>
+            </p>
+             <p>
+                <text class="titles">Exact Abidation:</text>
+                <label class="switch">
+                  <input type="checkbox" id="exact" value="true"></input>
+                  <span class="slider round"></span>
+                </label>
+            </p>
+            <p>
+                <span class="input">
+                    Closeness Sensitivity: 
+                    <input type="number" id="sens" value="80"></input>
+                    <span></span>   
+                </span>
+            </p>
+        </div>
         <div id="main-container">
                 <video width="0" height="0" id = "gum" autoplay></video>
                 <canvas width="640" height="480" id = "canvas"></canvas>

@@ -1,5 +1,6 @@
 body {
   font-family: "Roboto", Arial, sans-serif !important;
+  background-color: #41D69A;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -122,3 +123,4 @@ ol {
 
 #canvas {
 }
+

@@ -9,7 +9,14 @@ console.log('camera script');
 
 // This code is adapted from
 // https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
+//load in html options from page
 var youarell = document.getElementById("link");
+var toggle = document.getElementById("toggle");
+var erval = document.getElementById("time");
+var userNum = document.getElementById("users");
+var exactUser = document.getElementById("exact");
+var sensitivity = document.getElementById("sens");
+
 var mediaSource = new MediaSource();
 mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
 var mediaRecorder;
@@ -54,25 +61,40 @@ function handleSourceOpen(event) {
   sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
   console.log('Source buffer: ', sourceBuffer);
 }
+//google face Detector call
 async function detect() {
     const faces = await faceDetector.detect(canvas);
     drawFaces(faces);
   }
-
+  //initialize facecount, whether there's been a change in number of faces and chrome canvas id
   var fc = 0;
   var hasChanged = false;
   var vid = 0;
-  console.log(youarell.value);
+  var minface;
+
   async function drawFaces(faces) {
-    //check if there was a change in the number of faces and draw faces
+    minface = false;
+    faces.forEach(face => {
+      const { width, height, top, left } = face.boundingBox;
+      context.strokeStyle = '#00F';
+      context.lineWidth = 5;
+      context.strokeRect(left, top, width, height);
+      if(width>sensitivity.value){
+        minface=true;
+      }
+    });
+    //check if there was a change in the number of faces
     var compare = fc;
     fc = faces.length;
-    if(compare != fc)
+    if(compare != fc || minface==false)
       hasChanged = true;
     else
         hasChanged = false;
+    
+    //if there was a change and the number of faces is greater than our threshold (default 1), 
     if(hasChanged){
-      if(faces.length>1){
+      if(exactUser.checked){
+        if(faces.length!=userNum.value || minface==false){
         chrome.windows.update(vid, {focused: true}, function() {
             if (chrome.runtime.lastError) {
                 chrome.windows.create(
@@ -82,12 +104,26 @@ async function detect() {
                     });
             }
         });
-        intcount=7;
+        intcount=erval.value;
         }
-
+      }
+      else{
+        if(faces.length>userNum.value || minface==false){
+          chrome.windows.update(vid, {focused: true}, function() {
+              if (chrome.runtime.lastError) {
+                  chrome.windows.create(
+                      {'url': youarell.value, 'type': 'panel', 'focused': true},
+                      function(chromeWindow) {
+                          vid = chromeWindow.id;
+                      });
+              }
+          });
+          intcount=erval.value;
+          }
+        }
     }
     else{
-      if(faces.length == 1){
+      if(faces.length == userNum.value && minface == true){
           if(intcount>0){
             intcount--;
             console.log("count decreased!");
@@ -102,31 +138,14 @@ async function detect() {
       });
       }
     }
+    //draw face boxes
 
-    console.log(hasChanged);
-    //
-    faces.forEach(face => {
-      const { width, height, top, left } = face.boundingBox;
-      context.strokeStyle = '#00F';
-      context.lineWidth = 5;
-      context.strokeRect(left, top, width, height);
-
-      face.landmarks.forEach(landmark => {
-        console.log("found landmark!!!")
-        context.lineWidth = 5;
-        if (landmark.type === 'eye') {
-          context.strokeStyle = '#00F';
-          context.strokeRect(landmark.location.x - 20, landmark.location.y - 20, 40, 20);
-        } else {
-          context.strokeStyle = '#00F';
-          context.strokeRect(landmark.location.x - 40, landmark.location.y - 40, 80, 40);
-        }
-      });
-    });
   }
   setInterval(() => {
-    context.drawImage(gumVideo, 0, 0, canvas.width, canvas.height);
-    detect();
+    if(toggle.checked){ 
+      context.drawImage(gumVideo, 0, 0, canvas.width, canvas.height);
+      detect();
+    }
   }, 100);
 
 
