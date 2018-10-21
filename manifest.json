@@ -19,5 +19,5 @@
    "manifest_version": 2,
    "name": "QuickSwitch",
    "permissions": [ "storage", "identity", "activeTab", "tabs", "\u003Call_urls>" ],
-   "version": "0.5"
+   "version": "0.7"
 }

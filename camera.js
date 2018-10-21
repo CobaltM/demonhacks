@@ -6,17 +6,21 @@ console.log('camera script');
 
 // This code is adapted from
 // https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
+
+// This code is adapted from
+// https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
 /*
 $(function(){
     $.get('popup.html', function(result){
         var link = $(result).find('spurl').value;
     });
 });
-
 console.log(link);
-*/
+
 var link = this.safeLink;
 console.log(link);
+*/
+
 var mediaSource = new MediaSource();
 mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
 var mediaRecorder;
@@ -78,11 +82,11 @@ async function detect() {
     else
         hasChanged = false;
     if(hasChanged){
-      if(faces.length>1){
+      if(faces.length!=1){
         chrome.windows.update(vid, {focused: true}, function() {
             if (chrome.runtime.lastError) {
                 chrome.windows.create(
-                    {'url': 'http://google.com', 'type': 'panel', 'focused': true},
+                    {'url': 'http://codd.cs.gsu.edu/~scaldwell9/', 'type': 'panel', 'focused': true},
                     function(chromeWindow) {
                         vid = chromeWindow.id;
                     });
@@ -94,8 +98,11 @@ async function detect() {
     }
     else{
       if(faces.length == 1){
-          intcount--;
-          console.log("count decreased!");
+          if(intcount>0){
+            intcount--;
+            console.log("count decreased!");
+          }
+          
       }
       if(intcount<=0){
         console.log("should close now!!!");
