@@ -18,6 +18,6 @@
    },
    "manifest_version": 2,
    "name": "QuickSwitch",
-   "permissions": [ "storage", "identity", "activeTab", "tabs", "\u003Call_urls>" ],
-   "version": "0.7"
+   "permissions": [ "activeTab" ],
+   "version": "1.0"
 }

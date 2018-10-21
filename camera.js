@@ -70,31 +70,40 @@ async function detect() {
   var fc = 0;
   var hasChanged = false;
   var vid = 0;
-  var minface;
-
+  var minface=true;
+  // all detection logic in this app !!! TODO: BREAK UP THIS FUNCTION
   async function drawFaces(faces) {
-    minface = false;
+    //first check if there's any faces at all. If none detected, we will ignore the minimum face size requirement
+    if(faces.length>0){
+      minface=false;
+    }
+    //alright so no we're iterating through each face and drawing it on our canvas
     faces.forEach(face => {
       const { width, height, top, left } = face.boundingBox;
       context.strokeStyle = '#00F';
       context.lineWidth = 5;
       context.strokeRect(left, top, width, height);
+      //we only need one face to be bigger than the set threshold (default 80)
       if(width>sensitivity.value){
         minface=true;
       }
     });
     //check if there was a change in the number of faces
+    //if there was a change then there's a good chance we will need to block the screen
     var compare = fc;
     fc = faces.length;
     if(compare != fc || minface==false)
       hasChanged = true;
     else
         hasChanged = false;
-    
-    //if there was a change and the number of faces is greater than our threshold (default 1), 
+
     if(hasChanged){
+      //so if the exact checking is enabled, we have stricter checking
       if(exactUser.checked){
+        //length of the array needs to be exactly the length specified
         if(faces.length!=userNum.value || minface==false){
+        //here is where we actually create the new window. First we try to update it, and if we meet
+        //an error trying to update a non-existing page then we create a new webpage
         chrome.windows.update(vid, {focused: true}, function() {
             if (chrome.runtime.lastError) {
                 chrome.windows.create(
@@ -104,11 +113,16 @@ async function detect() {
                     });
             }
         });
+        //since something has likely changed we need to wait before we can try to remove anything or face glitchiness
+        //So we set a specified value (default 10 iters) that will act as a timer to any changes not updating the page
         intcount=erval.value;
         }
       }
+      //here checking is more lenient
       else{
-        if(faces.length>userNum.value || minface==false){
+        //same exact thing as the stricter  update
+        //!!!TODO: make this window creation into a function that is called by these conditions for readability
+        if(faces.length>userNum.value || minface == false){
           chrome.windows.update(vid, {focused: true}, function() {
               if (chrome.runtime.lastError) {
                   chrome.windows.create(
