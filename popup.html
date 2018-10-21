@@ -5,15 +5,22 @@
             <link href="styles/main.css" rel="stylesheet">
             </link>
         </meta>
+        <script src="jquery.js"></script>
         <script src="scripts/popup.js">
         </script>
 
     </head>
     <body>
         <div class="container">
+            <!-- Matters in button version only-->
             <ul>
+
                 <li id="in">
-                    Safe Page: <input type="text" id="spurl" name="spurl" value="http://www.google.com" >
+                    <form id="the-form">
+                    Safe Page: 
+                        <input type="text" id="spurl" value="http://www.google.com">
+                        <input type="submit" id = "change" value = "Submit Change">
+                    </form>
                 </li>
                 <li id="checkPage">
                     START

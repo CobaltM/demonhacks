@@ -9,18 +9,7 @@ console.log('camera script');
 
 // This code is adapted from
 // https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
-/*
-$(function(){
-    $.get('popup.html', function(result){
-        var link = $(result).find('spurl').value;
-    });
-});
-console.log(link);
-
-var link = this.safeLink;
-console.log(link);
-*/
-
+var youarell = document.getElementById("link");
 var mediaSource = new MediaSource();
 mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
 var mediaRecorder;
@@ -73,6 +62,7 @@ async function detect() {
   var fc = 0;
   var hasChanged = false;
   var vid = 0;
+  console.log(youarell.value);
   async function drawFaces(faces) {
     //check if there was a change in the number of faces and draw faces
     var compare = fc;
@@ -82,17 +72,17 @@ async function detect() {
     else
         hasChanged = false;
     if(hasChanged){
-      if(faces.length!=1){
+      if(faces.length>1){
         chrome.windows.update(vid, {focused: true}, function() {
             if (chrome.runtime.lastError) {
                 chrome.windows.create(
-                    {'url': 'http://codd.cs.gsu.edu/~scaldwell9/', 'type': 'panel', 'focused': true},
+                    {'url': youarell.value, 'type': 'panel', 'focused': true},
                     function(chromeWindow) {
                         vid = chromeWindow.id;
                     });
             }
         });
-        intcount=5;
+        intcount=7;
         }
 
     }
@@ -105,7 +95,6 @@ async function detect() {
           
       }
       if(intcount<=0){
-        console.log("should close now!!!");
           chrome.windows.remove(vid, function() {
           if (chrome.runtime.lastError) {
           }
