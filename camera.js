@@ -41,15 +41,16 @@ var constraints = {
 
 navigator.getUserMedia(constraints, successCallback, errorCallback );
 
-
 function successCallback(stream) {
   console.log('getUserMedia() got stream: ', stream);
-  window.stream = stream;
+    gumVideo.srcObject  = stream;
+  /*
   if (window.URL) {
     gumVideo.src = window.URL.createObjectURL(stream);
   } else {
     gumVideo.src = stream;
   }
+  */
 }
 
 
@@ -77,7 +78,7 @@ async function detect() {
     if(faces.length>0){
       minface=false;
     }
-    //alright so no we're iterating through each face and drawing it on our canvas
+    //alright so now we're iterating through each face and drawing it on our canvas
     faces.forEach(face => {
       const { width, height, top, left } = face.boundingBox;
       context.strokeStyle = '#00F';
@@ -95,7 +96,7 @@ async function detect() {
     if(compare != fc || minface==false)
       hasChanged = true;
     else
-        hasChanged = false;
+      hasChanged = false;
 
     if(hasChanged){
       //so if the exact checking is enabled, we have stricter checking
@@ -104,15 +105,16 @@ async function detect() {
         if(faces.length!=userNum.value || minface==false){
         //here is where we actually create the new window. First we try to update it, and if we meet
         //an error trying to update a non-existing page then we create a new webpage
-        chrome.windows.update(vid, {focused: true}, function() {
-            if (chrome.runtime.lastError) {
-                chrome.windows.create(
-                    {'url': youarell.value, 'type': 'panel', 'focused': true},
-                    function(chromeWindow) {
-                        vid = chromeWindow.id;
-                    });
-            }
-        });
+        //makeWindow(vid,youarell);
+		chrome.windows.update(vid, {focused: true}, function() {
+              if (chrome.runtime.lastError) {
+                  chrome.windows.create(
+                      {'url': youarell.value, 'type': 'panel', 'focused': true},
+                      function(chromeWindow) {
+                          vid = chromeWindow.id;
+                      });
+              }
+          });
         //since something has likely changed we need to wait before we can try to remove anything or face glitchiness
         //So we set a specified value (default 10 iters) that will act as a timer to any changes not updating the page
         intcount=erval.value;
@@ -123,7 +125,8 @@ async function detect() {
         //same exact thing as the stricter  update
         //!!!TODO: make this window creation into a function that is called by these conditions for readability
         if(faces.length>userNum.value || minface == false){
-          chrome.windows.update(vid, {focused: true}, function() {
+          //makeWindow(vid,youarell);
+		  chrome.windows.update(vid, {focused: true}, function() {
               if (chrome.runtime.lastError) {
                   chrome.windows.create(
                       {'url': youarell.value, 'type': 'panel', 'focused': true},
@@ -154,6 +157,18 @@ async function detect() {
     }
     //draw face boxes
 
+  }
+  //deprecated
+  function makeWindow(vid,youarell){
+    chrome.windows.update(vid, {focused: true}, function() {
+              if (chrome.runtime.lastError) {
+                  chrome.windows.create(
+                      {'url': youarell.value, 'type': 'panel', 'focused': true},
+                      function(chromeWindow) {
+                          vid = chromeWindow.id;
+                      });
+              }
+          });
   }
   setInterval(() => {
     if(toggle.checked){ 
